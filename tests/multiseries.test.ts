@@ -215,3 +215,6 @@ const cn_processor_shift = new MarkdownProcessor(cn_renderer_shift)
 test("should skip h1 and number h>2", () => {
     expect(cn_processor_shift.addIndex(orig_md)).toBe(expected_shifted_md)
 })
+test("should remove the index", () => {
+    expect(cn_processor_shift.removeIndex(expected_shifted_md)).toBe(orig_md)
+})

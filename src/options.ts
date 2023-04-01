@@ -2,7 +2,7 @@ import * as roman from "roman-numbers"
 import * as nzhcn from "nzh/cn"
 
 
-interface Series {
+export interface Series {
     get(num: number): string;
 }
 
@@ -15,6 +15,19 @@ export class NumberSeries implements Series {
 export class ChineseSeries implements Series {
     get(num: number): string {
         return nzhcn.encodeS(num)
+    }
+}
+
+export class ArraySeries implements Series {
+    numberList: string[]
+    constructor(numberList: string[]) {
+        this.numberList = numberList
+    }
+    get(num: number): string {
+        if (num >= 0 && num < this.numberList.length) {
+            return this.numberList[num]
+        } 
+        return num.toString()
     }
 }
 
