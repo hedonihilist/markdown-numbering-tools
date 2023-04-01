@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "mntools": "./dist/cli.js"
+  },
   "scripts": {
     "test": "jest",
     "build": "tsc",
@@ -15,6 +18,7 @@
   },
   "dependencies": {
     "@types/jest": "^29.5.0",
+    "commander": "^10.0.0",
     "ctcjs": "^1.0.9",
     "nzh": "^1.0.8",
     "roman-numbers": "^1.0.2",
