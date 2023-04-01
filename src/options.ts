@@ -97,17 +97,24 @@ export class MultiSeriesRenderer implements IndexRenderer {
         const seriesRegex = /\{\s*(\w+)\s*\}/g
         let match
         let level = 1
-        let rendered = pattern
+        let rendered = ""
+        let idxToProcess = 0    // last unprocessed string index in pattern
         while ((match = seriesRegex.exec(pattern)) !== null) {
             const seriesName = match[1]
             const seriesStart = match.index
+            const seriesEnd = seriesStart + match[0].length
             if (level-1 >= index.length) {
                 // TODO throw something
             }
+            
             const number = this.seriesRegistry.registry[seriesName].get(index[level-1])
             // put the digit in pattern
-            rendered = replaceString(rendered, seriesStart, seriesStart+match[0].length, number)
+            rendered += pattern.slice(idxToProcess, seriesStart) + number
+            idxToProcess = seriesEnd
             level++
+        }
+        if (idxToProcess < pattern.length) {
+            rendered += pattern.slice(idxToProcess)
         }
         return rendered
     }

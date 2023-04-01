@@ -106,3 +106,76 @@ test('should output chapter number', () => {
 test('should remove chapter number', () => {
     expect(cn_processor2.removeIndex(expected_cn_md2)).toBe(orig_md)
 })
+
+// let's test some roman numbers
+const orig_roman_md = `
+# a
+foolbar
+
+## a-b
+foolbar
+
+## a-c
+foolbar
+foolbar
+
+## a-d
+
+## a-e
+
+### a-d-d
+foolbar
+
+# b
+
+blabla
+
+## bb
+
+\`\`\`
+# hash tag inside code block is skipped
+### skipped
+\`\`\`
+
+`
+
+const expected_roman_md = `
+# I. a
+foolbar
+
+## I.I a-b
+foolbar
+
+## I.II a-c
+foolbar
+foolbar
+
+## I.III a-d
+
+## I.IV a-e
+
+### I.IV.I a-d-d
+foolbar
+
+# II. b
+
+blabla
+
+## II.I bb
+
+\`\`\`
+# hash tag inside code block is skipped
+### skipped
+\`\`\`
+
+`
+
+const romanRender = new MultiSeriesRenderer(new SeriesRegistry(), new Map([
+    [1, '{roman}.'],
+    [2, '{roman}.{roman}'],
+    [3, '{roman}.{roman}.{roman}']
+]))
+const romanProcessor = new MarkdownProcessor(romanRender)
+test('should output roman indexed markdown', () => {
+    expect(romanProcessor.addIndex(orig_roman_md)).toBe(expected_roman_md)
+})
