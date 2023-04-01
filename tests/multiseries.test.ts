@@ -1,5 +1,5 @@
 import { MarkdownProcessor } from "../src/MarkdownProcessor"
-import { MultiSeriesRenderer, SeriesRegistry } from "../src/options"
+import { MultiSeriesRenderer, SeriesRegistry, ShiftedIndexRender } from "../src/options"
 
 const orig_md = `
 # a
@@ -178,4 +178,40 @@ const romanRender = new MultiSeriesRenderer(new SeriesRegistry(), new Map([
 const romanProcessor = new MarkdownProcessor(romanRender)
 test('should output roman indexed markdown', () => {
     expect(romanProcessor.addIndex(orig_roman_md)).toBe(expected_roman_md)
+})
+
+const expected_shifted_md = `
+# a
+foolbar
+
+## 一、 a-b
+foolbar
+
+## 二、 a-c
+foolbar
+foolbar
+
+### 2.1. a-c-d
+foolbar
+
+# b
+
+blabla
+
+## 一、 bb
+
+\`\`\`
+# hash tag inside code block is skipped
+### skipped
+\`\`\`
+
+`
+
+const cn_renderer_shift = new ShiftedIndexRender(1, new MultiSeriesRenderer(new SeriesRegistry(), new Map([
+    [1, '{chinese}、']
+])))
+const cn_processor_shift = new MarkdownProcessor(cn_renderer_shift)
+
+test("should skip h1 and number h>2", () => {
+    expect(cn_processor_shift.addIndex(orig_md)).toBe(expected_shifted_md)
 })

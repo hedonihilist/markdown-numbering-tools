@@ -71,10 +71,33 @@ export interface IndexRenderer {
     render(index: number[]): string;
 }
 
-export class DefaultRenderer implements IndexRenderer {
+export interface ShiftedIndexRender {
+    shiftRender(index: number[], shift: number): string;
+}
+
+export class DefaultRenderer implements IndexRenderer{
+    public shiftRender(index: number[], shift: number): string {
+        return this.render(index.slice(shift, index.length))
+    }
     public patterns: Map<number, string>;
     public render(index: number[]): string {
+        if (index.length == 0) {
+            return ''
+        }
         return index.join('.') + '.'
+    }
+}
+
+export class ShiftedIndexRender implements IndexRenderer {
+    patterns: Map<number, string>;
+    renderer: IndexRenderer
+    shift: number
+    constructor(shift: number, renderer: IndexRenderer) {
+        this.renderer = renderer
+        this.shift = shift
+    }
+    render(index: number[]): string {
+        return this.renderer.render(index.slice(this.shift, index.length))
     }
 }
 
@@ -82,7 +105,7 @@ function replaceString(str: string, start: number, end: number, replacement: str
     return str.slice(0, start) + replacement + str.slice(end);
 }
 
-export class MultiSeriesRenderer implements IndexRenderer {
+export class MultiSeriesRenderer implements IndexRenderer{
     patterns: Map<number, string>;
     seriesRegistry: SeriesRegistry;
     constructor(seriesRegistry: SeriesRegistry, headerPatterns: Map<number, string>) {

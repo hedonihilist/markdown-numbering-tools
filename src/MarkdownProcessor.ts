@@ -65,7 +65,7 @@ export class MarkdownProcessor {
             generator.updateIndex(level)
 
             const prefix = this.renderer.render(generator.currentIndex())
-            if (!header.startsWith(prefix)) {
+            if (prefix && !header.startsWith(prefix)) {
                 return `${'#'.repeat(level)} ${prefix} ${header}`
             }
 
@@ -81,7 +81,7 @@ export class MarkdownProcessor {
             generator.updateIndex(level)
 
             const prefix = this.renderer.render(generator.currentIndex())
-            if (header.startsWith(prefix)) {
+            if (prefix && header.startsWith(prefix)) {
                 // remove it
                 return `${'#'.repeat(level)} ${header.slice(prefix.length, header.length).trim()}`
             }
