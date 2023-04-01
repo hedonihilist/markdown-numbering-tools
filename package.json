@@ -1,0 +1,23 @@
+{
+  "name": "markdown-numbering-tools",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.5.0"
+  },
+  "dependencies": {
+    "@types/jest": "^29.5.0",
+    "ctcjs": "^1.0.9",
+    "nzh": "^1.0.8",
+    "roman-numbers": "^1.0.2",
+    "ts-jest": "^29.0.5"
+  }
+}
