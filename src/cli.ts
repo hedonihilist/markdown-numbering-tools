@@ -6,14 +6,26 @@ import { ArraySeries, DefaultRenderer, IndexRenderer, MultiSeriesRenderer, Serie
 import { MarkdownProcessor } from './MarkdownProcessor.js';
 
 const program = new commander.Command()
-program
+const header_command = program.command('header')
+const image_command = program.command('image')
+header_command
+    .description('numbering the headers')
     .argument('<input_file>', 'markdown file to convert')
     .argument('[output_file]', 'output file')
     .option("-s, --series_file <value>", "series file")
     .option("-p, --pattern_file <value>", "pattern_file")
     .option("-k, --skip <value>", "skip first k headers")
     .option("-r, --remove", "remove index")
-    .parse(process.argv)
+    .action(function(input_file, output_file, options, command) {
+        handleHeaderCommand(command)
+    })
+
+image_command
+    .description('numbering the images')
+    .argument('<input_file>', 'markdown file to convert')
+    .argument('[output_file]', 'output file')
+    .option('-t, --temp')
+
 program.parse()
 
 function readJsonFile(filePath: string): any {
@@ -48,36 +60,34 @@ function loadSeries(seriesFile: string): Map<string, Series> {
     return seriesMap
 }
 
-const opts = program.opts()
-const args = program.args
-const input_file = args[0]
-const output_file = args[1]
-const seriesRegistry = new SeriesRegistry()
-let renderer: IndexRenderer = new DefaultRenderer();
+async function handleHeaderCommand(command: commander.Command) {
+    const opts = command.opts()
+    const input_file = command.args[0]
+    const output_file = command.args[1]
+    const seriesRegistry = new SeriesRegistry()
+    let renderer: IndexRenderer = new DefaultRenderer();
 
-// load series and add to registry
-if (opts.series_file) {
-    const seriesMap = loadSeries(opts.series_file)
-    seriesMap.forEach((v, k) => {
-        seriesRegistry.addSeries(k, v)
-    })
-}
+    // load series and add to registry
+    if (opts.series_file) {
+        const seriesMap = loadSeries(opts.series_file)
+        seriesMap.forEach((v, k) => {
+            seriesRegistry.addSeries(k, v)
+        })
+    }
 
-// load patterns
-if (opts.pattern_file) {
-    const patterns = loadPatterns(opts.pattern_file)
-    console.log(patterns)
-    renderer = new MultiSeriesRenderer(seriesRegistry, patterns)
-}
+    // load patterns
+    if (opts.pattern_file) {
+        const patterns = loadPatterns(opts.pattern_file)
+        console.log(patterns)
+        renderer = new MultiSeriesRenderer(seriesRegistry, patterns)
+    }
 
-// whether to skip the h1
-if (opts.skip) {
-    renderer = new ShiftedIndexRender(opts.skip, renderer)
-}
+    // whether to skip the h1
+    if (opts.skip) {
+        renderer = new ShiftedIndexRender(opts.skip, renderer)
+    }
 
-const processor = new MarkdownProcessor(renderer)
-
-async function main() {
+    const processor = new MarkdownProcessor(renderer)
     let markdown: string;
 
     if (input_file === '-') {
@@ -92,7 +102,7 @@ async function main() {
     } else {
         output = processor.addIndex(markdown)
     }
-    if (args[1]) {
+    if (header_command.args[1]) {
         fs.writeFileSync(output_file, output)
     } else {
         // write to console
@@ -100,4 +110,6 @@ async function main() {
     }
 }
 
-main()
+async function handleImageCommand(command:commander.Command) {
+    console.error('not implemented yet')
+}
