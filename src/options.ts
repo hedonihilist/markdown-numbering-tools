@@ -1,5 +1,5 @@
 import * as roman from "roman-numbers"
-import * as nzhcn from "nzh/cn.js"
+import nzh from "nzh"
 
 
 export interface Series {
@@ -14,7 +14,7 @@ export class NumberSeries implements Series {
 
 export class ChineseSeries implements Series {
     get(num: number): string {
-        return nzhcn.encodeS(num)
+        return nzh.cn.encodeS(num)
     }
 }
 

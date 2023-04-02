@@ -18,12 +18,12 @@ jobs:
       - name: Install and Build 
         run: |
           npm install
-          npm run build # 这是我的项目的打包命令，你也可以改成你的
+          npm run build 
 
       - name: 'Publish to the npm registry'
         uses: primer/publish@3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # 跟前面步骤中的 NPM_AUTH_TOKEN 保持一致
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         with:
           default_branch: 'master'
