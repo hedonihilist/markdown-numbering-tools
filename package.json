@@ -12,7 +12,7 @@
     "build": "tsc",
     "start": "node dist/index.js"
   },
-  "author": "",
+  "author": "hedonihilist",
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.5.0"
@@ -21,7 +21,6 @@
     "@types/get-stdin": "^7.0.0",
     "@types/jest": "^29.5.0",
     "commander": "^10.0.0",
-    "ctcjs": "^1.0.9",
     "get-stdin": "^9.0.0",
     "nzh": "^1.0.8",
     "roman-numbers": "^1.0.2",
