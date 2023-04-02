@@ -1,5 +1,5 @@
 import * as roman from "roman-numbers"
-import * as nzhcn from "nzh/cn"
+import * as nzhcn from "nzh/cn.js"
 
 
 export interface Series {

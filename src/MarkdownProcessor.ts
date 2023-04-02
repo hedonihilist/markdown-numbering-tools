@@ -1,4 +1,4 @@
-import { DefaultRenderer, IndexRenderer, SeriesRegistry } from "./options"
+import { DefaultRenderer, IndexRenderer, SeriesRegistry } from "./options.js"
 
 export class MarkdownProcessor {
     renderer: IndexRenderer

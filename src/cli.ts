@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import * as fs from 'fs';
+import getStdin from 'get-stdin';
 import * as commander from 'commander';
-import { ArraySeries, DefaultRenderer, IndexRenderer, MultiSeriesRenderer, Series, SeriesRegistry, ShiftedIndexRender } from './options';
-import { MarkdownProcessor } from './MarkdownProcessor';
+import { ArraySeries, DefaultRenderer, IndexRenderer, MultiSeriesRenderer, Series, SeriesRegistry, ShiftedIndexRender } from './options.js';
+import { MarkdownProcessor } from './MarkdownProcessor.js';
 
 const program = new commander.Command()
 program
@@ -10,7 +11,8 @@ program
     .argument('[output_file]', 'output file')
     .option("-s, --series_file <value>", "series file")
     .option("-p, --pattern_file <value>", "pattern_file")
-    .option("-k --skip <value>", "skip first k headers")
+    .option("-k, --skip <value>", "skip first k headers")
+    .option("-r, --remove", "remove index")
     .parse(process.argv)
 program.parse()
 
@@ -37,9 +39,9 @@ function loadPatterns(patternFile: string): Map<number, string> {
     return pattern
 }
 
-function loadSeries(seriesFile: string): Map<string,Series> {
+function loadSeries(seriesFile: string): Map<string, Series> {
     let json = readJsonFile(seriesFile)
-    let seriesMap: Map<string,Series> = new Map()
+    let seriesMap: Map<string, Series> = new Map()
     for (let name in json) {
         seriesMap.set(name, new ArraySeries(json[name]))
     }
@@ -75,11 +77,27 @@ if (opts.skip) {
 
 const processor = new MarkdownProcessor(renderer)
 
-let markdown = fs.readFileSync(input_file, 'utf8');
-const output = processor.addIndex(markdown)
-if (args[1]) {
-    fs.writeFileSync(output_file, output)
-} else {
-    // write to console
-    console.log(output)
+async function main() {
+    let markdown: string;
+
+    if (input_file === '-') {
+        markdown = await getStdin()
+    } else {
+        markdown = fs.readFileSync(input_file, 'utf8');
+    }
+
+    let output: string;
+    if (opts.remove) {
+        output = processor.removeIndex(markdown)
+    } else {
+        output = processor.addIndex(markdown)
+    }
+    if (args[1]) {
+        fs.writeFileSync(output_file, output)
+    } else {
+        // write to console
+        console.log(output)
+    }
 }
+
+main()
